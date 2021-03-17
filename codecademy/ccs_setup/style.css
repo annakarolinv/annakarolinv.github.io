@@ -1,31 +1,9 @@
-p {
-    font-family: Arial;
-}
-
-h1 {
-    color: maroon;
-}
-
-.title {
-    color: teal;
-}
-
-.uppercase {
-    text-transform: uppercase;
-}
-
-.cursive {
-    font-family: cursive;
-}
-
-.capitalize {
-    text-transform: capitalize;
-}
-
-.publish-time {
-    color: gray;
-}
-
-h2.destination {
-    font-family: cursive;
-}
+p {font-family: Arial;}
+h1 {color: maroon;}
+h2.destination {font-family: cursive;}
+.title {color: teal;}
+.uppercase {text-transform: uppercase;}
+.cursive {font-family: cursive;}
+.capitalize {text-transform: capitalize;}
+.publish-time {color: gray;}
+.description h5 {color: teal;}
