@@ -25,3 +25,7 @@ h1 {
 .publish-time {
     color: gray;
 }
+
+h2.destination {
+    font-family: cursive;
+}
