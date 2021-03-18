@@ -15,3 +15,23 @@ header p {
     padding-right: 1em;
     margin-top: -2em;
 }
+
+.white,
+.white a:link,
+.white a:visited {
+    color: white;
+}
+
+header nav img {
+    border-radius: 50%;
+}
+
+a:link,
+a:visited {
+    color: black;
+}
+
+header address {
+    font-size: 0.9em;
+    font-style: italic;
+}
