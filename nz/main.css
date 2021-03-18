@@ -4,7 +4,7 @@ body {
     /* Zentrierung in der Mitte, Ränder bleiben immer gleich */
     margin: auto;
     /* Schriftart für das ganze Dokument */
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 header {
@@ -83,4 +83,26 @@ footer .back {
 footer {
     /* oben Rand 1 em, rechts, unten 3 em, rechts 0 */
     padding: 1em 0 3em 0;
+}
+
+.mr-3 {
+    margin-right: 0.3em;"
+}
+
+.ml-3 {
+    margin-left: 0.3em;"
+}
+
+/* Abfrage Anzeige auf verschiedenen Geräten */
+@media screen and (max-width: 900px) {
+    main {
+        max-width: 90%;
+    }
+}
+
+/* anpassen des headers an die viewport width */
+@media screen and (max-width: 1280px) {
+    header img.banner {
+        width: 100vw;
+    }
 }
