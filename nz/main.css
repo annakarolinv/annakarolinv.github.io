@@ -71,6 +71,10 @@ main ul {
     list-style-type: circle;
 }
 
+main a {
+    font-weight: normal;
+}
+
 /* Positionierung der Elemente am rechten / linken Bildrand, fließen in einer Zeile */
 footer .next {
     float: right;
@@ -97,6 +101,9 @@ footer {
 @media screen and (max-width: 900px) {
     main {
         max-width: 90%;
+    }
+    figure img {
+        width: 100%;
     }
 }
 
