@@ -1,6 +1,9 @@
 body {
+    /* maximal Breite der Seite */
     max-width: 1280px;
+    /* Zentrierung in der Mitte, Ränder bleiben immer gleich */
     margin: auto;
+    /* Schriftart für das ganze Dokument */
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -26,6 +29,7 @@ header nav img {
     border-radius: 50%;
 }
 
+/* Link der schonmal besucht wurde, erscheint schwarz */
 a:link,
 a:visited {
     color: black;
@@ -37,6 +41,7 @@ header address {
 }
 
 main {
+    /* maximale Breite */
     max-width: 70%;
     margin: auto;
 }
@@ -56,6 +61,7 @@ main figure img {
 }
 
 #map {
+    /* Bereich freihalten */
     height: 360px;
     width: 100%;
     border: 1px solid gray;
@@ -65,6 +71,7 @@ main ul {
     list-style-type: circle;
 }
 
+/* Positionierung der Elemente am rechten / linken Bildrand, fließen in einer Zeile */
 footer .next {
     float: right;
 }
