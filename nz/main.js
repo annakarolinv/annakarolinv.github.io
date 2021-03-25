@@ -19,6 +19,9 @@ const map = L.map("map", {
 // Objekt {} und Liste & Array [] erstellt 
 
 let mrk = L.marker([-45.316667, 166.983333]).addTo(map);
-mrk.bindPopup("Doubtful Sound").openPopup();
+mrk.bindPopup(`
+        <h4>Stop ${stop.nr}: ${stop.name}</h4>
+        <p><i class="fas fa-external-link-alt mr-3"></i><a href="${stop.wikipedia}">Read about the stop on Wikipedia</a></p>
+        `).openPopup();
 
 // console.log(document.querySelector("#map")); /* Zugreifen auf ein Element aus einem bestimmten Script */
