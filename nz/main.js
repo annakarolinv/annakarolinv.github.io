@@ -22,6 +22,11 @@ let nav = document.querySelector("#navigation");
 console.log(nav);
 
 //console.log(ROUTE);
+
+ROUTE.sort((stop1, stop2) => {
+    return stop1.nr > stop2.nr
+})
+
 for (let entry of ROUTE) {
     // console.log(entry);
 
@@ -41,8 +46,18 @@ for (let entry of ROUTE) {
     }
 }
 
-// <option value="annakarolinv">Doubtful Sound</option>
+nav.onchange = (evt) => {
+    console.log(evt.target.selectedIndex);
+    let selected = evt.target.selectedIndex;
+    let options = evt.target.options;
+    let username = options[selected].value;
+    let link = `https://${username}.github.io/nz/index.html`;
+    console.log(username, link);
 
+    window.location.href = link;
+};
+
+// <option value="annakarolinv">Doubtful Sound</option>
 
 /* let mrk = L.marker([stop.lat, stop.lng]).addTo(map);
 mrk.bindPopup(`
