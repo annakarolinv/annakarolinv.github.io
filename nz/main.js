@@ -18,9 +18,16 @@ const map = L.map("map", {
 });
 // Objekt {} und Liste & Array [] erstellt 
 
+let nav = document.querySelector("#navigation");
+console.log(nav);
+
 //console.log(ROUTE);
 for (let entry of ROUTE) {
     // console.log(entry);
+
+    nav.innerHTML += `
+        <option value="${entry.user}">Stop ${entry.nr}: ${entry.name}</option>
+    `;
 
     let mrk = L.marker([entry.lat, entry.lng]).addTo(map);
     mrk.bindPopup(`
@@ -33,6 +40,9 @@ for (let entry of ROUTE) {
         mrk.openPopup();
     }
 }
+
+// <option value="annakarolinv">Doubtful Sound</option>
+
 
 /* let mrk = L.marker([stop.lat, stop.lng]).addTo(map);
 mrk.bindPopup(`
