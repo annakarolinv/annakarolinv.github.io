@@ -22,14 +22,17 @@ let layerControl = L.control.layers({
 
 let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
 
-// Leaflet Funktion
 let awsLayer = L.featureGroup();
 layerControl.addOverlay(awsLayer, "Wetterstationen Tirol");
 // awsLayer.addTo(map);
 
 let snowLayer = L.featureGroup();
 layerControl.addOverlay(snowLayer, "Schneehöhe (cm)");
-snowLayer.addTo(map);
+// snowLayer.addTo(map);
+
+let windLayer = L.featureGroup();
+layerControl.addOverlay(windLayer, "Windgeschwindigkeit (km/h)");
+windLayer.addTo(map);
 
 // Daten von Server laden 
 // weil's fehleranfällig ist, muss man auf die Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
@@ -44,14 +47,14 @@ fetch(awsURL)
                 [station.geometry.coordinates[1], station.geometry.coordinates[0]
             ]);
             let formattedDate = new Date(station.properties.date);
-            // dann kann man das Länderspezifische Datum eingeben
+            // dann kann man spezifisches Datum eingeben
             marker.bindPopup(`
                 <h3>${station.properties.name}</h3>
                 <ul>
                     <li>Datum: ${formattedDate.toLocaleDateString("de")}</li> 
                     <li>Temperatur: ${station.properties.LT} °C</li>
                     <li>Schneehöhe: ${station.properties.HS} cm</li>
-                    <li>Luftfeuchtigkeit: ${station.properties.WR} </li>
+                    <li>Luftdruck: ${station.properties.LD} hPa</li>
                     <li>Höhe der Wetterstation: ${station.geometry.coordinates[2]} m ü.d.M.</li>
                     <li>Windgeschwindigkeit: ${station.properties.WG || '?'} km/h</li>
                 </ul>
@@ -75,6 +78,25 @@ fetch(awsURL)
                     icon: snowIcon
                 });
                 snowMarker.addTo(snowLayer);
+            }
+            if (station.properties.WG) {
+                let windHighlightClass = '';
+                if (station.properties.WG > 10) {
+                    windHighlightClass = 'wind-10';
+                }
+                if (station.properties.WG > 20) {
+                    windHighlightClass = 'wind-20';
+                }
+                let windIcon = L.divIcon({
+                    html: `<div class="wind-label ${windHighlightClass}">${station.properties.WG}</div>`,
+                });
+                let windMarker = L.marker([
+                    station.geometry.coordinates[1],
+                    station.geometry.coordinates[0]
+                ], {
+                    icon: windIcon
+                });
+                windMarker.addTo(windLayer);
             }
         }
         // set map view to all stations
