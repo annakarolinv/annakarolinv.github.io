@@ -1,0 +1,10 @@
+h2 {
+    text-align: center;
+}
+
+#map {
+    width: 90vw;
+    height: 90vh;
+    border: solid black 1px;
+    margin: auto;
+}
