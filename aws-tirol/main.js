@@ -25,7 +25,11 @@ let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
 // Leaflet Funktion
 let awsLayer = featureGroup();
 layerControl.addOverlay(awsLayer, "Wetterstationen Tirol");
-awsLayer.addTo(map);
+// awsLayer.addTo(map);
+
+let snowLayer = L.featureGroup();
+layerControl.addOverlay;
+snowLayer.addTo(map);
 
 // Daten von Server laden 
 // weil's Fehleranfällig ist, muss man auf die Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
@@ -46,15 +50,34 @@ fetch(awsURL)
                 <ul>
                     <li>Datum: ${formattedDate.toLocaleDateString("de")}</li> 
                     <li>Temperatur: ${station.properties.LT} °C</li>
+                    <li>Schneehöhe: ${station.properties.HS} cm</li>
+                    <li>Luftfeuchtigkeit: ${station.properties.} </li>
+                    <li>Höhe der Wetterstation: ${station.geometry.coordinates[2]} m ü.d.M.</li>
+                    <li>Windgeschwindigkeit: ${station.properties.WG || '?'} km/h</li>
                 </ul>
+                <a target="">Grafik</a>
             `);
             marker.addTo(awsLayer);
+            if(station.properties.HS) {
+                let highlightClass = '';
+                if (station.properties.HS > 100) {
+                    highlightClass = 'snow-100';
+                }
+                if (station.properties.HS > 200) {
+                    highlightClass = 'snow-100';
+                }
+                let snowIcon = L.divIcon({
+                    html: `<div class="snow-label">${station.properties.HS}</div>`
+                })
+                let snowMarker = L.marker([
+                    station.geometry.coordinates[1], station.geometry.coordinates[0]
+                ], {
+                    icon: snowIcon
+                });
+                snowMarker.addTo(snowLayer);
+            }
         }
         // set map view to all stations
         map.fitBounds(awsLayer.getBounds);
 });
-
-// Schneewert
-// Luftfeuchtigkeit
-// Höhe der Wetterstation
 
