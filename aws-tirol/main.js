@@ -1,4 +1,3 @@
-
 let basemapGray = L.tileLayer.provider('BasemapAT.grau');
 
 let map = L.map("map", {
@@ -10,7 +9,7 @@ let map = L.map("map", {
 });
 
 let layerControl = L.control.layers({
-    "BasemapAT.grau": basemapGray, 
+    "BasemapAT.grau": basemapGray,
     "BasemapAT.orthofoto": L.tileLayer.provider('BasemapAT.orthofoto'),
     "BasemapAT.surface": L.tileLayer.provider('BasemapAT.surface'),
     "BasemapAT.overlay": L.tileLayer.provider('BasemapAT.overlay'),
@@ -32,20 +31,24 @@ layerControl.addOverlay(snowLayer, "Schneehöhe (cm)");
 
 let windLayer = L.featureGroup();
 layerControl.addOverlay(windLayer, "Windgeschwindigkeit (km/h)");
-windLayer.addTo(map);
+//windLayer.addTo(map);
+
+let tempLayer = L.featureGroup();
+layerControl.addOverlay(tempLayer, "Lufttemperatur (°C)");
+tempLayer.addTo(map);
+
 
 // Daten von Server laden 
 // weil's fehleranfällig ist, muss man auf die Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
 fetch(awsURL)
-    .then(response => response.json()) 
+    .then(response => response.json())
     .then(json => {
         console.log('Daten konvertiert: ', json);
         // Marker für Wetterstationen hinzufügen
         for (station of json.features) {
             // console.log('Station: ', station);
             let marker = L.marker(
-                [station.geometry.coordinates[1], station.geometry.coordinates[0]
-            ]);
+                [station.geometry.coordinates[1], station.geometry.coordinates[0]]);
             let formattedDate = new Date(station.properties.date);
             // dann kann man spezifisches Datum eingeben
             marker.bindPopup(`
@@ -61,7 +64,7 @@ fetch(awsURL)
                 <a target="_blank" href="https://wiski.tirol.gv.at/lawine/grafiken/1100/standard/tag/${station.properties.plot}.png">Grafik</a>
             `);
             marker.addTo(awsLayer);
-            if(station.properties.HS) {
+            if (station.properties.HS) {
                 let highlightClass = '';
                 if (station.properties.HS > 100) {
                     highlightClass = 'snow-100';
@@ -98,8 +101,25 @@ fetch(awsURL)
                 });
                 windMarker.addTo(windLayer);
             }
+            if (station.properties.LT) {
+                let tempHighlightClass = '';
+                if (station.properties.LT > 0) {
+                    tempHighlightClass = 'temp-pos';
+                }
+                if (station.properties.LT < 0 ) {
+                    tempHighlightClass = 'temp-neg';
+                }
+                let tempIcon = L.divIcon({
+                    html: `<div class="temp-label ${tempHighlightClass}">${station.properties.LT}</div>`
+                })
+                let tempMarker = L.marker([
+                    station.geometry.coordinates[1], station.geometry.coordinates[0]
+                ], {
+                    icon: tempIcon
+                });
+                tempMarker.addTo(tempLayer);
+            }
         }
         // set map view to all stations
         map.fitBounds(awsLayer.getBounds());
-});
-
+    });
