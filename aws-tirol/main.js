@@ -50,13 +50,16 @@ L.control.scale({
 overlays.temperature.addTo(map);
 
 let newLabel = (coords, options) => {
-    console.log("Koordinaten coords: ", coords);
-    console.log("Optionspunkt: ", options);
-    let marker = L.marker([coords[1], coords[2]]);
-    console.log("Marker: ", marker);
-    return marker;
     // create label
+    let label = L.divIcon({
+        html: `<div>${options.value}</div>`,
+        className: "text-label"
+    });
+    let marker = L.marker([coords[1], coords[2]], {
+        icon: label
+    });
     // return label
+    return marker;
 };
 
 let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
@@ -66,8 +69,7 @@ let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
     https://leafletjs.com/reference-1.7.1.html#control-layers-addoverlay
 */
 
-// load data from server 
-// weil's fehleranfällig ist, muss man auf die Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
+// load data from server // weil's fehleranfällig ist, muss man auf die Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
 fetch(awsURL)
     .then(response => response.json())
     .then(json => {
@@ -133,7 +135,7 @@ fetch(awsURL)
                 windMarker.addTo(overlays.windspeed);
             }
             if (typeof station.properties.LT == "number") {
-                newLabel(station.geometry.coordinates,{
+                newLabel(station.geometry.coordinates, {
                     value: station.properties.LT
                 });
                 marker.addTo(overlays.temperature);
@@ -143,4 +145,4 @@ fetch(awsURL)
         map.fitBounds(overlays.stations.getBounds());
     });
 
-    // newLabel(...,...).addTo(ob)
+// newLabel(...,...).addTo(ob)
