@@ -1,6 +1,5 @@
 let basemapGray = L.tileLayer.provider('BasemapAT.grau');
 
-// https://leafletjs.com/reference-1.7.1.html#map-example
 let map = L.map("map", {
     center: [47, 11],
     zoom: 9,
@@ -17,13 +16,16 @@ let overlays = {
     winddirection: L.featureGroup(),
 }
 /*  
+    https://leafletjs.com/reference-1.7.1.html#map-example
     https://leafletjs.com/reference-1.7.1.html#featuregroup
     https://leafletjs.com/reference-1.7.1.html#control-layers-addoverlay
     https://leafletjs.com/reference-1.7.1.html#divicon
     https://leafletjs.com/reference-1.7.1.html#tilelayer 
     https://leafletjs.com/reference-1.7.1.html#layergroup-l-layergroup
+    https://leafletjs.com/reference-1.7.1.html#marker
+    https://leafletjs.com/reference-1.7.1.html#control-layers
 */
-// https://leafletjs.com/reference-1.7.1.html#control-layers
+
 let layerControl = L.control.layers({
     "BasemapAT.grau": basemapGray,
     "BasemapAT.orthofoto": L.tileLayer.provider('BasemapAT.orthofoto'),
@@ -43,6 +45,8 @@ let layerControl = L.control.layers({
     // layer conrol permanently expanded
     collapsed: false
 }).addTo(map);
+// choose layer and add to map immediatly 
+overlays.temperature.addTo(map);
 
 L.control.scale({
     imperial: false,
@@ -50,10 +54,12 @@ L.control.scale({
     metric: true,
 }).addTo(map);
 
-// choose layer and add to map immediatly 
-overlays.temperature.addTo(map);
+let getColor = (value, colorRamp) => {
+    console.log("Wert: ", value, "Palette: ", colorRamp);
+};
 
 let newLabel = (coords, options) => {
+    let color = getColor(option.value, options.colors)
     let label = L.divIcon({
         html: `<div>${options.value}</div>`,
         className: "text-label"
@@ -66,20 +72,17 @@ let newLabel = (coords, options) => {
 
 let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
 
-// load data from server // weil's fehleranfällig ist, muss man auf die Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
+// load data from server // auf Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
 fetch(awsURL)
     .then(response => response.json())
     .then(json => {
         console.log('Daten konvertiert: ', json);
         // Marker für Wetterstationen hinzufügen
         for (station of json.features) {
-            // console.log('Station: ', station);
-
-            // https://leafletjs.com/reference-1.7.1.html#marker
             let marker = L.marker(
                 [station.geometry.coordinates[1], station.geometry.coordinates[0]]);
             let formattedDate = new Date(station.properties.date);
-            // dann kann man spezifisches Datum eingeben
+            // spezifisches Datum eingeben
             marker.bindPopup(`
                 <h3>${station.properties.name}</h3>
                 <ul>
@@ -95,19 +98,22 @@ fetch(awsURL)
             marker.addTo(overlays.stations);
             if (typeof station.properties.HS == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
-                    value: station.properties.HS
+                    value: station.properties.HS, 
+                    colors: COLORS.snowheight
                 });
                 marker.addTo(overlays.snowheight);
             }
             if (typeof station.properties.WG == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
-                    value: station.properties.WG
+                    value: station.properties.WG,
+                    colors: COLORS.windspeed
                 });
                 marker.addTo(overlays.windspeed);
             }
             if (typeof station.properties.LT == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
-                    value: station.properties.LT
+                    value: station.properties.LT,
+                    color: COLORS.temperature
                 });
                 marker.addTo(overlays.temperature);
             }
