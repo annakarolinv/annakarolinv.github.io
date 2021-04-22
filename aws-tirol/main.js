@@ -9,6 +9,14 @@ let map = L.map("map", {
     ]
 });
 
+let overlays = {
+    stations: L.featureGroup(),
+    temperature: L.featureGroup(),
+    snowheight: L.featureGroup(),
+    windspeed: L.featureGroup(),
+    winddirection: L.featureGroup(),
+}
+
 // https://leafletjs.com/reference-1.7.1.html#control-layers
 let layerControl = L.control.layers({
     "BasemapAT.grau": basemapGray,
@@ -21,10 +29,20 @@ let layerControl = L.control.layers({
         L.tileLayer.provider('BasemapAT.orthofoto'),
         L.tileLayer.provider('BasemapAT.overlay')
     ])
+}, {
+    "Wetterstationen Tirol": overlays.stations,
+    "Temperatur (°C)": overlays.temperature,
+    "Schneehöhe (cm)": overlays.snowheight,
+    "Windgeschwindigkeit (km/h)": overlays.windspeed,
+    "Windrichtung": overlays.winddirection,
 }).addTo(map);
+
+// choose layer and add to map immediatly 
+overlays.temperature.addTo(map);
 
 let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
 
+/*  
 // https://leafletjs.com/reference-1.7.1.html#featuregroup
 let awsLayer = L.featureGroup();
 // https://leafletjs.com/reference-1.7.1.html#control-layers-addoverlay
@@ -42,9 +60,10 @@ layerControl.addOverlay(windLayer, "Windgeschwindigkeit (km/h)");
 let tempLayer = L.featureGroup();
 layerControl.addOverlay(tempLayer, "Lufttemperatur (°C)");
 tempLayer.addTo(map);
+*/
 
 
-// Daten von Server laden 
+// load data from server 
 // weil's fehleranfällig ist, muss man auf die Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
 fetch(awsURL)
     .then(response => response.json())
@@ -71,7 +90,7 @@ fetch(awsURL)
                 </ul>
                 <a target="_blank" href="https://wiski.tirol.gv.at/lawine/grafiken/1100/standard/tag/${station.properties.plot}.png">Grafik</a>
             `);
-            marker.addTo(awsLayer);
+            marker.addTo(overlays.stations);
             if (station.properties.HS) {
                 let highlightClass = '';
                 if (station.properties.HS > 100) {
@@ -89,7 +108,7 @@ fetch(awsURL)
                 ], {
                     icon: snowIcon
                 });
-                snowMarker.addTo(snowLayer);
+                snowMarker.addTo(overlays.snowheight);
             }
             if (station.properties.WG) {
                 let windHighlightClass = '';
@@ -108,7 +127,7 @@ fetch(awsURL)
                 ], {
                     icon: windIcon
                 });
-                windMarker.addTo(windLayer);
+                windMarker.addTo(overlays.windspeed);
             }
             if (station.properties.LT) {
                 let tempHighlightClass = '';
@@ -126,9 +145,9 @@ fetch(awsURL)
                 ], {
                     icon: tempIcon
                 });
-                tempMarker.addTo(tempLayer);
+                tempMarker.addTo(overlays.temperature);
             }
         }
         // set map view to all stations
-        map.fitBounds(awsLayer.getBounds());
+        map.fitBounds(overlays.stations.getBounds());
     });
