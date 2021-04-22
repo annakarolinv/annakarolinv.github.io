@@ -40,6 +40,8 @@ let layerControl = L.control.layers({
     collapsed: false
 }).addTo(map);
 
+L.control.scale().addTo(map);
+
 // choose layer and add to map immediatly 
 overlays.temperature.addTo(map);
 
