@@ -35,6 +35,9 @@ let layerControl = L.control.layers({
     "Schneehöhe (cm)": overlays.snowheight,
     "Windgeschwindigkeit (km/h)": overlays.windspeed,
     "Windrichtung": overlays.winddirection,
+}, {
+    // layer conrol permanently expanded
+    collapsed: false
 }).addTo(map);
 
 // choose layer and add to map immediatly 
