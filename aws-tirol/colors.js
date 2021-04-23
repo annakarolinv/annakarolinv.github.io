@@ -28,28 +28,29 @@ const COLORS = {
         max: 999,
         col: "#ff3232"
     }],
+
     temperature: [{
         min: -50,
         max: -25,
         col: "#9f80ff"
     }, {
-        min: -24,
+        min: -25,
         max: -20,
         col: "#784cff"
     }, {
-        min: -19,
+        min: -20,
         max: -15,
         col: "#0f5abe"
     }, {
-        min: -14,
+        min: -15,
         max: -10,
         col: "#1380ff"
     }, {
-        min: -9,
+        min: -10,
         max: -5,
         col: "#19cdff"
     }, {
-        min: -4,
+        min: -5,
         max: 0,
         col: "#8fffff"
     }, {
@@ -57,61 +58,66 @@ const COLORS = {
         max: 5,
         col: "#b0ffbc"
     }, {
-        min: 6,
+        min: 5,
         max: 10,
         col: "#ffff73"
     }, {
-        min: 11,
+        min: 10,
         max: 15,
         col: "#ffbe7d"
     }, {
-        min: 16,
+        min: 15,
         max: 20,
         col: "#ff9b41"
     }, {
-        min: 21,
+        min: 20,
         max: 25,
         col: "#ff1e23"
     }, {
-        min: 26,
+        min: 25,
         max: 30,
         col: "#ffff64"
     }, {
-        min: 31,
-        max: 100,
+        min: 30,
+        max: 99,
         col: "#ffff64"
     }],
+
     snowheight: [{
         min: 0,
+        max: 1,
+        col: "#fff"
+    }, {
+        min: 1,
         max: 10,
         col: "#ffffb2"
     }, {
-        min: 11,
+        min: 10,
         max: 25,
         col: "#b0ffbc"
     }, {
-        min: 26,
+        min: 25,
         max: 50,
         col: "#8cffff"
     }, {
-        min: 51,
+        min: 50,
         max: 100,
         col: "#19cdff"
     }, {
-        min: 101,
+        min: 100,
         max: 200,
         col: "#1982ff"
     }, {
-        min: 201,
+        min: 200,
         max: 300,
         col: "#1982ff"
     }, {
-        min: 301,
+        min: 300,
         max: 400,
         col: "#784bff"
     }, {
-        min: 401,
-        max: 600,
+        min: 400,
+        max: 99999,
         col: "#cd0feb"
     }]
 };

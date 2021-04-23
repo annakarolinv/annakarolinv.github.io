@@ -30,7 +30,6 @@ let layerControl = L.control.layers({
     "BasemapAT.grau": basemapGray,
     "BasemapAT.orthofoto": L.tileLayer.provider('BasemapAT.orthofoto'),
     "BasemapAT.surface": L.tileLayer.provider('BasemapAT.surface'),
-    "BasemapAT.overlay": L.tileLayer.provider('BasemapAT.overlay'),
     "BasemapAT.overlay+ortho": L.layerGroup([
         L.tileLayer.provider('BasemapAT.orthofoto'),
         L.tileLayer.provider('BasemapAT.overlay')
@@ -42,11 +41,9 @@ let layerControl = L.control.layers({
     "Windgeschwindigkeit (km/h)": overlays.windspeed,
     "Windrichtung": overlays.winddirection,
 }, {
-    // layer conrol permanently expanded
-    collapsed: false
-}).addTo(map);
-// choose layer and add to map immediatly 
-overlays.temperature.addTo(map);
+    collapsed: false    // layer conrol permanently expanded
+}).addTo(map); 
+overlays.temperature.addTo(map);    // choose layer and add to map immediatly
 
 L.control.scale({
     imperial: false,
@@ -55,34 +52,37 @@ L.control.scale({
 }).addTo(map);
 
 let getColor = (value, colorRamp) => {
-    console.log("Wert: ", value, "Palette: ", colorRamp);
+    // console.log("Wert: ", value, "Palette: ", colorRamp);
+    for (let rule of colorRamp) {
+        if (value >= rule.min && value < rule.max) {
+            return rule.col;
+        }
+    }
+    return "black";
 };
 
 let newLabel = (coords, options) => {
-    let color = getColor(option.value, options.colors)
+    let color = getColor(options.value, options.colors);
     let label = L.divIcon({
-        html: `<div>${options.value}</div>`,
+        html: `<div style="background-color:${color}">${options.value}</div>`,
         className: "text-label"
     })
     let marker = L.marker([coords[1], coords[0]], {
-        icon: label
+        icon: label,
+        title: `${options.station} (${coords[2]} m)`
     });
     return marker;
 };
 
 let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
-
-// load data from server // auf Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
-fetch(awsURL)
+fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
     .then(response => response.json())
     .then(json => {
-        console.log('Daten konvertiert: ', json);
-        // Marker für Wetterstationen hinzufügen
-        for (station of json.features) {
+        console.log('Daten konvertiert: ', json); 
+        for (station of json.features) {    // Marker für Wetterstationen hinzufügen
             let marker = L.marker(
                 [station.geometry.coordinates[1], station.geometry.coordinates[0]]);
-            let formattedDate = new Date(station.properties.date);
-            // spezifisches Datum eingeben
+            let formattedDate = new Date(station.properties.date); // spezifisches Datum eingeben
             marker.bindPopup(`
                 <h3>${station.properties.name}</h3>
                 <ul>
@@ -98,22 +98,25 @@ fetch(awsURL)
             marker.addTo(overlays.stations);
             if (typeof station.properties.HS == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
-                    value: station.properties.HS, 
-                    colors: COLORS.snowheight
+                    value: station.properties.HS.toFixed(0),
+                    colors: COLORS.snowheight,
+                    station: station.properties.name
                 });
                 marker.addTo(overlays.snowheight);
             }
             if (typeof station.properties.WG == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
-                    value: station.properties.WG,
-                    colors: COLORS.windspeed
+                    value: station.properties.WG.toFixed(0),
+                    colors: COLORS.windspeed,
+                    station: station.properties.name
                 });
                 marker.addTo(overlays.windspeed);
             }
             if (typeof station.properties.LT == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
-                    value: station.properties.LT,
-                    color: COLORS.temperature
+                    value: station.properties.LT.toFixed(1),
+                    colors: COLORS.temperature,
+                    station: station.properties.name
                 });
                 marker.addTo(overlays.temperature);
             }
