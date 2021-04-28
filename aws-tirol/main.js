@@ -14,8 +14,9 @@ let overlays = {
     snowheight: L.featureGroup(),
     windspeed: L.featureGroup(),
     winddirection: L.featureGroup(),
-    humidity: L.featureGroup()
-}
+    humidity: L.featureGroup(),
+};
+
 /*  
     https://leafletjs.com/reference-1.7.1.html#map-example
     https://leafletjs.com/reference-1.7.1.html#featuregroup
@@ -41,11 +42,12 @@ let layerControl = L.control.layers({
     "Schneehöhe (cm)": overlays.snowheight,
     "Windgeschwindigkeit (km/h)": overlays.windspeed,
     "Windrichtung": overlays.winddirection,
-    "Luftfeuchtigkeit (%)": overlays.humidity
+    "Luftfeuchtigkeit (%)": overlays.humidity,
 }, {
-    collapsed: false    // layer conrol permanently expanded
-}).addTo(map); 
-overlays.temperature.addTo(map);    // choose layer and add to map immediatly
+    collapsed: false // layer conrol permanently expanded
+}).addTo(map);
+
+overlays.temperature.addTo(map); // choose default layer and add to map
 
 L.control.scale({
     imperial: false,
@@ -53,8 +55,9 @@ L.control.scale({
     metric: true,
 }).addTo(map);
 
+// rain viewer plugin
+
 // Funktion zum Einfärben der Label
-// soll für einen gegebenen Wert die passende Farbe je nach Schwellenwerten ermitteln
 let getColor = (value, colorRamp) => {
     // console.log("Wert: ", value, "Palette: ", colorRamp);
     for (let rule of colorRamp) {
@@ -65,31 +68,55 @@ let getColor = (value, colorRamp) => {
     return "black";
 };
 
-// Funktion
-// liefert L.divIcon zurück
-// Argumente beim Aufruf: Koordinaten & den zu visualisierenden Wert als options-Objekt
+// Funktion get directions
+let getDirection = (value, directionRamp) => {
+    for (let rule of directionRamp) {
+        if (value >= rule.min && rule.max) {
+            return rule.dir;
+        }
+    }
+    return "NA"; // default
+};
+
+// Funktion newLabel
+// liefert L.divIcon zurück & Argumente beim Aufruf: Koordinaten & den zu visualisierenden Wert als options-Objekt
 let newLabel = (coords, options) => {
     let color = getColor(options.value, options.colors);
-    let label = L.divIcon({     // erzeugt neuen Temperaturlabel
-        html: `<div style="background-color:${color}">${options.value}</div>`,  // definiert den angezeigten Text 
-        className: "text-label"     //  fügt dem Label eine CSS-Klasse hinzu - main.cs
+    let label = L.divIcon({ // erzeugt neuen Temperaturlabel
+        html: `<div style="background-color:${color}">${options.value}</div>`, // definiert den angezeigten Text 
+        className: "text-label" //  fügt dem Label eine CSS-Klasse hinzu - main.cs
     })
     let marker = L.marker([coords[1], coords[0]], {
-        icon: label,    // L.divIcon verwenden wir schließlich als Icon beim L.marker-Befehl
+        icon: label, // L.divIcon verwenden wir schließlich als Icon beim L.marker-Befehl
         title: `${options.station} (${coords[2]} m)`
     });
-    return marker;  // gibt die Funktion den erzeugten Marker zurück. Wir speichern ihn beim Aufruf der Funktion in der Variablen marker
+    return marker; // gibt die Funktion den erzeugten Marker zurück. Wir speichern ihn beim Aufruf der Funktion in der Variablen marker
 };
 
 let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
-fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
+
+fetch(awsURL) // load data from server // auf Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
     .then(response => response.json())
     .then(json => {
-        console.log('Daten konvertiert: ', json); 
-        for (station of json.features) {    // Marker für Wetterstationen hinzufügen
+        console.log('Daten konvertiert: ', json);
+        // Marker für Wetterstationen hinzufügen
+        for (station of json.features) {
             let marker = L.marker(
                 [station.geometry.coordinates[1], station.geometry.coordinates[0]]);
-            let formattedDate = new Date(station.properties.date);  // spezifisches Datum eingeben
+
+            //get direction
+            let direction = getDirections(station.properties.WR, DIRECTIONS);
+
+            /* let winddirection = '';
+            if (typeof station.properties.WR == "number") {
+                winddirection = getDirection(station.properties.WR, DIRECTIONS);
+            } else{
+                direction="NA";
+            } */
+
+            let formattedDate = new Date(station.properties.date); // spezifisches Datum eingeben
+
+            // pop-up
             marker.bindPopup(`
                 <h3>${station.properties.name}</h3>
                 <ul>
@@ -97,13 +124,17 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
                     <li>Temperatur: ${station.properties.LT} °C</li>
                     <li>Schneehöhe: ${station.properties.HS} cm</li>
                     <li>Luftdruck: ${station.properties.LD} hPa</li>
-                    <li>Luftfeuchtigkeit: ${station.properties.RH} %</li>
+                    <li>Luftfeuchtigkeit: ${station.properties.RH || '?' } %</li>
                     <li>Höhe der Wetterstation: ${station.geometry.coordinates[2]} m ü.d.M.</li>
                     <li>Windgeschwindigkeit: ${station.properties.WG || '?'} km/h</li>
+                    <li>Windrichtung: ${direction || '?'}</li>
                 </ul>
                 <a target="_blank" href="https://wiski.tirol.gv.at/lawine/grafiken/1100/standard/tag/${station.properties.plot}.png">Grafik</a>
             `);
+
             marker.addTo(overlays.stations);
+
+            // snow height
             if (typeof station.properties.HS == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
                     value: station.properties.HS.toFixed(0),
@@ -112,6 +143,8 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
                 });
                 marker.addTo(overlays.snowheight);
             }
+
+            // wind speed
             if (typeof station.properties.WG == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
                     value: station.properties.WG.toFixed(0),
@@ -120,6 +153,8 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
                 });
                 marker.addTo(overlays.windspeed);
             }
+
+            // temperature
             if (typeof station.properties.LT == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
                     value: station.properties.LT.toFixed(1),
@@ -128,6 +163,8 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
                 });
                 marker.addTo(overlays.temperature);
             }
+
+            // humidity
             if (typeof station.properties.RH == "number") {
                 let marker = newLabel(station.geometry.coordinates, {
                     value: station.properties.RH.toFixed(1),
@@ -136,7 +173,18 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
                 });
                 marker.addTo(overlays.humidity);
             }
+
+            // winddirection
+            if (typeof station.properties.WR == "letter") {
+                let marker = newLabel(station.properties.coordinates, {
+                    value: station.properties.WR.directions,
+                    colors: DIRECTIONS,
+                    station: station.properties.name
+                });
+                marker.addTo(overlays.winddirection);
+            }
         }
+
         // set map view to all stations
         map.fitBounds(overlays.stations.getBounds());
     });
