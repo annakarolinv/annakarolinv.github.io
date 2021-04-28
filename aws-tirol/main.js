@@ -14,6 +14,7 @@ let overlays = {
     snowheight: L.featureGroup(),
     windspeed: L.featureGroup(),
     winddirection: L.featureGroup(),
+    humidity: L.featureGroup()
 }
 /*  
     https://leafletjs.com/reference-1.7.1.html#map-example
@@ -40,6 +41,7 @@ let layerControl = L.control.layers({
     "Schneehöhe (cm)": overlays.snowheight,
     "Windgeschwindigkeit (km/h)": overlays.windspeed,
     "Windrichtung": overlays.winddirection,
+    "Luftfeuchtigkeit (%)": overlays.humidity
 }, {
     collapsed: false    // layer conrol permanently expanded
 }).addTo(map); 
@@ -51,6 +53,8 @@ L.control.scale({
     metric: true,
 }).addTo(map);
 
+// Funktion zum Einfärben der Label
+// soll für einen gegebenen Wert die passende Farbe je nach Schwellenwerten ermitteln
 let getColor = (value, colorRamp) => {
     // console.log("Wert: ", value, "Palette: ", colorRamp);
     for (let rule of colorRamp) {
@@ -61,17 +65,20 @@ let getColor = (value, colorRamp) => {
     return "black";
 };
 
+// Funktion
+// liefert L.divIcon zurück
+// Argumente beim Aufruf: Koordinaten & den zu visualisierenden Wert als options-Objekt
 let newLabel = (coords, options) => {
     let color = getColor(options.value, options.colors);
-    let label = L.divIcon({
-        html: `<div style="background-color:${color}">${options.value}</div>`,
-        className: "text-label"
+    let label = L.divIcon({     // erzeugt neuen Temperaturlabel
+        html: `<div style="background-color:${color}">${options.value}</div>`,  // definiert den angezeigten Text 
+        className: "text-label"     //  fügt dem Label eine CSS-Klasse hinzu - main.cs
     })
     let marker = L.marker([coords[1], coords[0]], {
-        icon: label,
+        icon: label,    // L.divIcon verwenden wir schließlich als Icon beim L.marker-Befehl
         title: `${options.station} (${coords[2]} m)`
     });
-    return marker;
+    return marker;  // gibt die Funktion den erzeugten Marker zurück. Wir speichern ihn beim Aufruf der Funktion in der Variablen marker
 };
 
 let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
@@ -82,7 +89,7 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
         for (station of json.features) {    // Marker für Wetterstationen hinzufügen
             let marker = L.marker(
                 [station.geometry.coordinates[1], station.geometry.coordinates[0]]);
-            let formattedDate = new Date(station.properties.date); // spezifisches Datum eingeben
+            let formattedDate = new Date(station.properties.date);  // spezifisches Datum eingeben
             marker.bindPopup(`
                 <h3>${station.properties.name}</h3>
                 <ul>
@@ -90,6 +97,7 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
                     <li>Temperatur: ${station.properties.LT} °C</li>
                     <li>Schneehöhe: ${station.properties.HS} cm</li>
                     <li>Luftdruck: ${station.properties.LD} hPa</li>
+                    <li>Luftfeuchtigkeit: ${station.properties.RH} %</li>
                     <li>Höhe der Wetterstation: ${station.geometry.coordinates[2]} m ü.d.M.</li>
                     <li>Windgeschwindigkeit: ${station.properties.WG || '?'} km/h</li>
                 </ul>
@@ -119,6 +127,14 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
                     station: station.properties.name
                 });
                 marker.addTo(overlays.temperature);
+            }
+            if (typeof station.properties.RH == "number") {
+                let marker = newLabel(station.geometry.coordinates, {
+                    value: station.properties.RH.toFixed(1),
+                    colors: COLORS.humidity,
+                    station: station.properties.name
+                });
+                marker.addTo(overlays.humidity);
             }
         }
         // set map view to all stations
