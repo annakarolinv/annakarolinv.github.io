@@ -69,7 +69,7 @@ let getColor = (value, colorRamp) => {
 };
 
 // Funktion get directions
-let getDirection = (value, directionRamp) => {
+let getDirections = (value, directionRamp) => {
     for (let rule of directionRamp) {
         if (value >= rule.min && rule.max) {
             return rule.dir;
