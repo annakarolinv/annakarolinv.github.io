@@ -17,7 +17,8 @@ let baselayers = {
 let overlays = {
     busLines: L.featureGroup(),
     busStops: L.featureGroup(),
-    pedAreas: L.featureGroup()
+    pedAreas: L.featureGroup(),
+    sights: L.featureGroup()
 };
 
 // Karte initialisieren und auf Wiens Wikipedia Koordinate blicken
@@ -40,13 +41,15 @@ let layerControl = L.control.layers({
 }, {
     "Liniennetz Vienna Sightseeing": overlays.busLines,
     "Haltestellen Vienna Sightseeing": overlays.busStops,
-    "Fußgängerzonen": overlays.pedAreas
+    "Fußgängerzonen": overlays.pedAreas,
+    "Sehenswürdigkeiten": overlays.sights
 }).addTo(map);
 
 // alle Overlays nach dem Laden anzeigen
 overlays.busLines.addTo(map);
 overlays.busStops.addTo(map);
 overlays.pedAreas.addTo(map);
+overlays.sights.addTo(map);
 
 // Funktion  BUSHALTESTELLEN
 let drawBusStop = (geoJSONdata) => {
@@ -62,8 +65,8 @@ let drawBusStop = (geoJSONdata) => {
         pointToLayer: (geoJSONpoint, latlng) => {
             return L.marker(latlng, {
                 icon: L.icon({
-                    iconUrl: 'icons/busstopblue.png',
-                    iconSize: [35, 35]
+                    iconUrl: 'icons/haltestellewlogd.png',
+                    iconSize: [25, 25]
                 })
             })
         },
@@ -116,7 +119,26 @@ let drawPedestrianAreas = (geoJSONdata) => {
 }
 
 // Funktion SEHENSWÜRDIGKEITEN
-
+let drawSights = (geoJSONdata) => {
+    console.log('Sehenswürdigkeit: ', geoJSONdata);
+    L.geoJSON(geoJSONdata, {
+        onEachFeature: (feature, layer) => {
+            layer.bindPopup(`<strong>${feature.properties.NAME}</strong>
+            <hr>
+            ${feature.properties.ADRESSE} <br>
+            <i class="fas fa-external-link-alt mr-3"></i> <a href='${feature.properties.WEITERE_INF}'>Weitere Infos</a>`);
+        },
+        // neuer marker mit icon bei Punktdatensatz
+        pointToLayer: (geoJSONpoint, latlng) => {
+            return L.marker(latlng, {
+                icon: L.icon({
+                    iconUrl: 'icons/sehenswuerdigogd.png',
+                    iconSize: [20, 25]
+                })
+            })
+        },
+    }).addTo(overlays.sights);
+}
 
 
 // Datenauswertung
@@ -136,6 +158,8 @@ for (let config of OGDWIEN) {
                 drawBusLines(geoJSONdata);
             } else if (config.title == "Fußgängerzonen") {
                 drawPedestrianAreas(geoJSONdata);
+            } else if (config.title == "Sehenswürdigkeiten") {
+                drawSights(geoJSONdata);
             }
         })
 }
