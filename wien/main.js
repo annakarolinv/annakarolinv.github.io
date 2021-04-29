@@ -64,7 +64,7 @@ let drawBusStop = (geoJSONdata) => {
                 })
             })
         }
-    }).addTo(map);
+    }).addTo(overlays.busStops);
 }
 
 // Daten aus dem Ordner laden
@@ -98,9 +98,7 @@ for (let config of OGDWIEN) {
 
             // config auswerten
             if (config.title == "Haltestellen Vienna Sightseeing") {
-                drawBusStop();
+                drawBusStop(geoJSONdata);
             }
-
-            L.geoJSON(geoJSONdata).addTo(map);
         })
 }
