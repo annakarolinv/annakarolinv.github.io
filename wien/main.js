@@ -55,7 +55,7 @@ let drawBusStop = (geoJSONdata) => {
         onEachFeature: (feature, layer) => {
             layer.bindPopup(`<strong>${feature.properties.LINE_NAME}</strong>
             <hr>
-            Station: ${feature.properties.STAT_NAME}`)
+            Station: ${feature.properties.STAT_NAME}`);
         },
 
         // neuer marker mit icon
@@ -81,7 +81,7 @@ let drawBusLines = (geoJSONdata) => {
         style: (feature) => {
             // Farbe aus main.css
             let col = COLORS.buslines[feature.properties.LINE_NAME];
-            return {        
+            return {
                 color: col
             }
         },
@@ -89,21 +89,43 @@ let drawBusLines = (geoJSONdata) => {
             layer.bindPopup(`<strong>${feature.properties.LINE_NAME}</strong>
             <hr>
             von: ${feature.properties.FROM_NAME} <br>
-            nach: ${feature.properties.TO_NAME}`)
+            nach: ${feature.properties.TO_NAME}`);
         }
     }).addTo(overlays.busLines);
+}
+
+// Funktion 
+let drawPedestriaAreas = (geoJSONdata) => {
+    console.log('Zone: ', geoJSONdata);
+    L.geoJSON(geoJSONdata, {
+        style: (feature) => {
+            return {
+                stroke: true,
+                color: "silver",
+                fillColor: "yellow",
+                fillOpacity: 0.3
+            }
+        },
+            // funktion
+            onEachFeature: (feature, layer) => {
+                layer.bindPopup(`<strong>Fußgängerzone ${feature.properties.ADRESSE}</strong>
+            <hr>
+            ${feature.properties.FROM_NAME || ""} <br>
+            ${feature.properties.TO_NAME || ""}`);
+            }
+    }).addTo(overlays.pedAreas);
 }
 
 
 // Datenauswertung
 
 for (let config of OGDWIEN) {
-    console.log("Config: ", config.data);   // zeigt an, welche Daten/Datei verwendet wurden
+    console.log("Config: ", config.data); // zeigt an, welche Daten/Datei verwendet wurden
 
     fetch(config.data)
         .then(response => response.json())
         .then(geoJSONdata => {
-            console.log("Data: ", geoJSONdata);     // zeigt wie viele / welche Objekte im Datensatz sind
+            console.log("Data: ", geoJSONdata); // zeigt wie viele / welche Objekte im Datensatz sind
 
             // config auswerten
             if (config.title == "Haltestellen Vienna Sightseeing") {
