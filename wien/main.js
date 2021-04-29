@@ -53,8 +53,11 @@ let drawBusStop = (geoJSONdata) => {
     L.geoJSON(geoJSONdata, {
         // funktion
         onEachFeature: (feature, layer) => {
-            layer.bindPopup(feature.properties.STAT_NAME)
+            layer.bindPopup(`<strong>${feature.properties.LINE_NAME}</strong>
+            <hr>
+            Station: ${feature.properties.STAT_NAME}`)
         },
+        
         // neuer marker mit icon
         pointToLayer: (geoJSONpoint, latlng) => {
             return L.marker(latlng, {
@@ -63,38 +66,21 @@ let drawBusStop = (geoJSONdata) => {
                     iconSize: [35, 35]
                 })
             })
-        }
+        },
+
+        // Quellenangabe
+        attribution: '<a href="https://data.wien.gv.at">Stadt Wien</a>, <a href="https://mapicons.mapsmarker.com">Maps Icons Collection</a>'
+
     }).addTo(overlays.busStops);
 }
 
-// Daten aus dem Ordner laden
-/* fetch("data/TOURISTIKHTSVSLOGD.json")
-    .then(response => response.json())
-    .then(stations => {
-        L.geoJSON(stations, {       // objekt, das eine funktion aufruft, aus der der Name gelesen wird
-            // funktion
-            onEachFeature: (feature, layer) => {
-                layer.bindPopup(feature.properties.STAT_NAME)
-            },
-            // neuer marker mit icon
-            pointToLayer: (geoJSONpoint, latlng) => {
-                return L.marker(latlng, {
-                    icon: L.icon({
-                        iconUrl: 'icons/busstopblue.png',
-                        iconSize: [35, 35]
-                    })
-                })
-            }
-        }).addTo(map);
-    }) */
-
 for (let config of OGDWIEN) {
-    console.log("Config: ", config.data); // zeigt an, welche Daten/Datei verwendet wurden
+    console.log("Config: ", config.data);   // zeigt an, welche Daten/Datei verwendet wurden
 
     fetch(config.data)
         .then(response => response.json())
         .then(geoJSONdata => {
-            console.log("Data: ", geoJSONdata); // zeigt wie viele / welche Objekte im Datensatz sind
+            console.log("Data: ", geoJSONdata);     // zeigt wie viele / welche Objekte im Datensatz sind
 
             // config auswerten
             if (config.title == "Haltestellen Vienna Sightseeing") {
