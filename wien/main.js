@@ -57,7 +57,7 @@ let drawBusStop = (geoJSONdata) => {
             <hr>
             Station: ${feature.properties.STAT_NAME}`)
         },
-        
+
         // neuer marker mit icon
         pointToLayer: (geoJSONpoint, latlng) => {
             return L.marker(latlng, {
@@ -74,6 +74,22 @@ let drawBusStop = (geoJSONdata) => {
     }).addTo(overlays.busStops);
 }
 
+// Funktion
+let drawBusLines = (geoJSONdata) => {
+    console.log('Bus Lines: ', geoJSONdata);
+    L.geoJSON(geoJSONdata, {
+        onEachFeature: (feature, layer) => {
+            layer.bindPopup(`<strong>${feature.properties.LINE_NAME}</strong>
+            <hr>
+            von: ${feature.properties.FROM_NAME} <br>
+            nach: ${feature.properties.TO_NAME}`)
+        }
+    }).addTo(overlays.busLines);
+}
+
+
+// Datenauswertung
+
 for (let config of OGDWIEN) {
     console.log("Config: ", config.data);   // zeigt an, welche Daten/Datei verwendet wurden
 
@@ -85,6 +101,8 @@ for (let config of OGDWIEN) {
             // config auswerten
             if (config.title == "Haltestellen Vienna Sightseeing") {
                 drawBusStop(geoJSONdata);
+            } else if (config.title == "Liniennetz Vienna Sightseeing") {
+                drawBusLines(geoJSONdata);
             }
         })
 }
