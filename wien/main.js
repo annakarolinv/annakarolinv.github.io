@@ -48,7 +48,7 @@ overlays.busLines.addTo(map);
 overlays.busStops.addTo(map);
 overlays.pedAreas.addTo(map);
 
-// Funktion 
+// Funktion  BUSHALTESTELLEN
 let drawBusStop = (geoJSONdata) => {
     L.geoJSON(geoJSONdata, {
         // funktion
@@ -74,12 +74,12 @@ let drawBusStop = (geoJSONdata) => {
     }).addTo(overlays.busStops);
 }
 
-// Funktion
+// Funktion BUSLINIEN
 let drawBusLines = (geoJSONdata) => {
     console.log('Bus Lines: ', geoJSONdata);
     L.geoJSON(geoJSONdata, {
         style: (feature) => {
-            // Farbe aus main.css
+            // Farbe aus colors.js
             let col = COLORS.buslines[feature.properties.LINE_NAME];
             return {
                 color: col
@@ -94,8 +94,8 @@ let drawBusLines = (geoJSONdata) => {
     }).addTo(overlays.busLines);
 }
 
-// Funktion 
-let drawPedestriaAreas = (geoJSONdata) => {
+// Funktion FUSSGÄNGERZONEN
+let drawPedestrianAreas = (geoJSONdata) => {
     console.log('Zone: ', geoJSONdata);
     L.geoJSON(geoJSONdata, {
         style: (feature) => {
@@ -106,15 +106,17 @@ let drawPedestriaAreas = (geoJSONdata) => {
                 fillOpacity: 0.3
             }
         },
-            // funktion
-            onEachFeature: (feature, layer) => {
-                layer.bindPopup(`<strong>Fußgängerzone ${feature.properties.ADRESSE}</strong>
+        onEachFeature: (feature, layer) => {
+            layer.bindPopup(`<strong>Fußgängerzone ${feature.properties.ADRESSE}</strong>
             <hr>
-            ${feature.properties.FROM_NAME || ""} <br>
-            ${feature.properties.TO_NAME || ""}`);
-            }
+            ${feature.properties.ZEITRAUM} <br>
+            ${feature.properties.AUSN_TEXT}`);
+        }
     }).addTo(overlays.pedAreas);
 }
+
+// Funktion SEHENSWÜRDIGKEITEN
+
 
 
 // Datenauswertung
@@ -132,6 +134,8 @@ for (let config of OGDWIEN) {
                 drawBusStop(geoJSONdata);
             } else if (config.title == "Liniennetz Vienna Sightseeing") {
                 drawBusLines(geoJSONdata);
+            } else if (config.title == "Fußgängerzonen") {
+                drawPedestrianAreas(geoJSONdata);
             }
         })
 }
