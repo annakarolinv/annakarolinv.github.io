@@ -95,7 +95,7 @@ let newLabel = (coords, options) => {
 
 let awsURL = 'https://wiski.tirol.gv.at/lawine/produkte/ogd.geojson';
 
-fetch(awsURL) // load data from server // auf Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
+fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann in JSON konvertierten, dann kann man damit weiter arbeiten
     .then(response => response.json())
     .then(json => {
         console.log('Daten konvertiert: ', json);

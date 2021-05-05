@@ -24,8 +24,12 @@ console.log(nav);
 //console.log(ROUTE);
 
 ROUTE.sort((stop1, stop2) => {
-    return stop1.nr > stop2.nr
-})
+    if (stop1.nr > stop2.nr) {
+        return 1;
+    } else {
+        return -1;
+    }
+});
 
 for (let entry of ROUTE) {
     // console.log(entry);
@@ -46,23 +50,16 @@ for (let entry of ROUTE) {
     }
 }
 
+nav.selectedIndex = 10 - 1;
+
 nav.onchange = (evt) => {
     console.log(evt.target.selectedIndex);
     let selected = evt.target.selectedIndex;
     let options = evt.target.options;
     let username = options[selected].value;
     let link = `https://${username}.github.io/nz/index.html`;
-    console.log(username, link);
 
     window.location.href = link;
+    console.log(username, link);
 };
 
-// <option value="annakarolinv">Doubtful Sound</option>
-
-/* let mrk = L.marker([stop.lat, stop.lng]).addTo(map);
-mrk.bindPopup(`
-        <h4>Stop ${stop.nr}: ${stop.name}</h4>
-        <p><i class="fas fa-external-link-alt mr-3"></i><a href="${stop.wikipedia}">Read about the stop on Wikipedia</a></p>
-        `).openPopup(); */
-
-// console.log(document.querySelector("#map")); /* Zugreifen auf ein Element aus einem bestimmten Script */
