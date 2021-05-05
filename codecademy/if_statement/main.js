@@ -1,7 +1,11 @@
-let hungerLevel = 7;
+let mood = 'sleepy';
+let tirednessLevel = 6;
 
-if (hungerLevel > 7) {
-  console.log('Time to eat!');
+if (mood === 'sleepy' && tirednessLevel > 8) {
+    console.log('time to sleep');
 } else {
-  console.log('We can eat later!');
+    console.log('not bed time yet');
 }
+
+
+// where to put the ! ????
