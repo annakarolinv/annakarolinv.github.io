@@ -178,24 +178,33 @@ var miniMap = new L.Control.MiniMap(
     }
 ).addTo(map);
 
-// Initialise the reachability plugin
+// reachability plugin
+
+// funktion um Intervalle farblich zu unterscheiden
+let styleIntervals = (feature) => {
+    console.log(feature.properties);
+};
+
 L.control.reachability({
     // add settings/options here
     apiKey: '5b3ce3597851110001cf6248e5d9f867f324475f94952b029c4788f2',
+    //style Funktion einbringen
+    styleFn: styleIntervals,
+    // icons anpassen
     drawButtonContent: '',
-    drawButtonStyleClass: 'fas fa-pencil-alt', //
+    drawButtonStyleClass: 'fas fa-pencil-alt fa-2x', //
     deleteButtonContent: '',
-    deleteButtonStyleClass: 'fa fa-trash',
+    deleteButtonStyleClass: 'fa fa-trash fa-2x',
     distanceButtonContent: '',
-    distanceButtonStyleClass: 'fa fa-road',
+    distanceButtonStyleClass: 'fa fa-road fa-2x',
     timeButtonContent: '',
-    timeButtonStyleClass: 'far fa-clock', //
+    timeButtonStyleClass: 'far fa-clock fa-2x', //
     travelModeButton1Content: '',
-    travelModeButton1StyleClass: 'fa fa-car',
+    travelModeButton1StyleClass: 'fa fa-car fa-2x',
     travelModeButton2Content: '',
-    travelModeButton2StyleClass: 'fa fa-bicycle',
+    travelModeButton2StyleClass: 'fa fa-bicycle fa-2x',
     travelModeButton3Content: '',
-    travelModeButton3StyleClass: 'fa fa-male',
+    travelModeButton3StyleClass: 'fa fa-male fa-2x',
     travelModeButton4Content: '',
-    travelModeButton4StyleClass: 'fas fa-wheelchair' //
+    travelModeButton4StyleClass: 'fas fa-wheelchair fa-2x' //
 }).addTo(map);
