@@ -163,3 +163,7 @@ for (let config of OGDWIEN) {
             }
         })
 }
+
+// Leaflet hash
+// add dynamic URL hashes to web pages with Leaflet maps, you can easily link users to specific map views
+var hash = new L.Hash(map);
