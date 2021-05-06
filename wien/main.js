@@ -11,6 +11,7 @@ let baselayers = {
         L.tileLayer.provider("BasemapAT.orthofoto"),
         L.tileLayer.provider("BasemapAT.overlay")
     ]),
+    // minimap: L.tileLayer.provider("BasemapAT.HOT")
 };
 
 // Overlays für die Themen zum Ein- und Ausschalten definieren
@@ -165,6 +166,16 @@ for (let config of OGDWIEN) {
         })
 }
 
-// Leaflet hash
-// add dynamic URL hashes to web pages with Leaflet maps, you can easily link users to specific map views
+// Leaflet hash to add dynamic URL hashes to web pages with Leaflet maps, easily link users to specific map views
 var hash = new L.Hash(map);
+// oder L.hash(map); weil die Variable brauchen wir erstmal nicht
+
+// Mini Map for overview
+var miniMap = new L.Control.MiniMap(
+    L.tileLayer.provider("BasemapAT.basemap"), {
+        toggleDisplay: true,     // button to minimise minimap, defaults to false
+        minimized: false,
+        }
+    ).addTo(map);
+
+
