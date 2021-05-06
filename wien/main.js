@@ -16,7 +16,7 @@ let baselayers = {
 // Overlays für die Themen zum Ein- und Ausschalten definieren
 let overlays = {
     busLines: L.featureGroup(),
-    busStops: L.featureGroup(),
+    busStops: L.markerClusterGroup(),
     pedAreas: L.featureGroup(),
     sights: L.featureGroup()
 };
