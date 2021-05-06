@@ -183,6 +183,20 @@ var miniMap = new L.Control.MiniMap(
 // funktion um Intervalle farblich zu unterscheiden
 let styleIntervals = (feature) => {
     console.log(feature.properties);
+    let color = "";     // variable für Farbe zuweisen
+    let range = feature.properties.Range;   // Variable für Range-Wert zuweisen
+    if (feature.properties.Measure === "time") {
+        color = COLORS.minutes[range];      // objekt wird angesprochen
+    } else if (feature.properties.Measure === "distance") {
+        color = COLORS.kilometers[range];      // der variable wird die range übergeben
+    } else {
+        color = "white";
+    };
+    return {
+        color: color,
+        opacity: 0.5,
+        fillOpacity: 0.2
+    };
 };
 
 L.control.reachability({
