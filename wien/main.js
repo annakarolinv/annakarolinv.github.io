@@ -195,7 +195,7 @@ let styleIntervals = (feature) => {
     return {
         color: color,
         opacity: 0.5,
-        fillOpacity: 0.2
+        fillOpacity: 0.3
     };
 };
 
