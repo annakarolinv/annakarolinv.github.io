@@ -24,7 +24,7 @@ let overlays = {
 
 // Karte initialisieren und auf Wiens Wikipedia Koordinate blicken
 let map = L.map("map", {
-    fullscreenControl: true,        // plugin for Leaflet that adds fullscreen button to your maps
+    fullscreenControl: true, // plugin for Leaflet that adds fullscreen button to your maps
     center: [48.208333, 16.373056],
     zoom: 13,
     layers: [
@@ -173,13 +173,29 @@ var hash = new L.Hash(map);
 // Mini Map for overview
 var miniMap = new L.Control.MiniMap(
     L.tileLayer.provider("BasemapAT.basemap"), {
-        toggleDisplay: true,     // button to minimise minimap, defaults to false
+        toggleDisplay: true, // button to minimise minimap, defaults to false
         minimized: false,
-        }
-    ).addTo(map);
+    }
+).addTo(map);
 
 // Initialise the reachability plugin
 L.control.reachability({
     // add settings/options here
-    apiKey: '5b3ce3597851110001cf6248e5d9f867f324475f94952b029c4788f2'
+    apiKey: '5b3ce3597851110001cf6248e5d9f867f324475f94952b029c4788f2',
+    drawButtonContent: '',
+    drawButtonStyleClass: 'fas fa-pencil-alt', //
+    deleteButtonContent: '',
+    deleteButtonStyleClass: 'fa fa-trash',
+    distanceButtonContent: '',
+    distanceButtonStyleClass: 'fa fa-road',
+    timeButtonContent: '',
+    timeButtonStyleClass: 'far fa-clock', //
+    travelModeButton1Content: '',
+    travelModeButton1StyleClass: 'fa fa-car',
+    travelModeButton2Content: '',
+    travelModeButton2StyleClass: 'fa fa-bicycle',
+    travelModeButton3Content: '',
+    travelModeButton3StyleClass: 'fa fa-male',
+    travelModeButton4Content: '',
+    travelModeButton4StyleClass: 'fas fa-wheelchair' //
 }).addTo(map);
