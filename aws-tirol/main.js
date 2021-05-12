@@ -1,6 +1,7 @@
 let basemapGray = L.tileLayer.provider('BasemapAT.grau');
 
 let map = L.map("map", {
+    fullscreenControl: true, // plugin for Leaflet that adds fullscreen button to your maps
     center: [47, 11],
     zoom: 9,
     layers: [
@@ -188,3 +189,11 @@ fetch(awsURL)   // load data from server // auf Anwort des Servers warten, dann 
         // set map view to all stations
         map.fitBounds(overlays.stations.getBounds());
     });
+
+// Mini Map for overview
+var miniMap = new L.Control.MiniMap(
+    L.tileLayer.provider("BasemapAT.basemap"), {
+        toggleDisplay: true, // button to minimise minimap, defaults to false
+        minimized: false,
+    }
+).addTo(map);

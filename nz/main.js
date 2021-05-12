@@ -10,6 +10,7 @@ let stop = {
 console.log(stop.name);
 
 const map = L.map("map", {
+    fullscreenControl: true, // plugin for Leaflet that adds fullscreen button to your maps
     // center: [stop.lat, stop.lng],
     // zoom: 13,
     layers: [
@@ -63,3 +64,10 @@ nav.onchange = (evt) => {
     console.log(username, link);
 };
 
+// Mini Map for overview
+var miniMap = new L.Control.MiniMap(
+    L.tileLayer.provider("BasemapAT.basemap"), {
+        toggleDisplay: true, // button to minimise minimap, defaults to false
+        minimized: false,
+    }
+).addTo(map);
