@@ -66,7 +66,7 @@ nav.onchange = (evt) => {
 
 // Mini Map for overview
 var miniMap = new L.Control.MiniMap(
-    L.tileLayer.provider("BasemapAT.basemap"), {
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"), {
         toggleDisplay: true, // button to minimise minimap, defaults to false
         minimized: false,
     }
