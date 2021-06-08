@@ -56,7 +56,7 @@ const elevationControl = L.control.elevation({
 let articleDrawn = {};
 const drawWikipedia = (bounds) => {
     //console.log(bounds);
-    let url = `https://secure.geonames.org/wikipediaBoundingBoxJSON?north=${bounds.getNorth()}&south=${bounds.getSouth()}&east=${bounds.getEast()}&west=${bounds.getWest()}&username=webmapping&lang=de&maxRows=30`;
+    let url = `https://secure.geonames.org/wikipediaBoundingBoxJSON?north=${bounds.getNorth()}&south=${bounds.getSouth()}&east=${bounds.getEast()}&west=${bounds.getWest()}&username=annakarolinv&lang=de&maxRows=30`;
     //console.log(url);
 
     let icons = {
@@ -177,7 +177,7 @@ const drawTrack = (nr) => {
 
 };
 
-const selectedTrack = 7;
+const selectedTrack = 17;
 drawTrack(selectedTrack);
 
 const updateTexts = (nr) => {
