@@ -1,3 +1,4 @@
+// Test
 /* global L */
 // Bike Trail Tirol Beispiel
 
@@ -28,6 +29,7 @@ let map = L.map("map", {
         baselayers.grau
     ]
 })
+
 // Kartenhintergründe und Overlays zur Layer-Control hinzufügen
 let layerControl = L.control.layers({
     "basemap.at Standard": baselayers.standard,
